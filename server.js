@@ -21,19 +21,19 @@ mongoose.connect("mongodb://localhost:27017/cv").then(() => {
 const workexpSchema = mongoose.Schema({
     workplace:{
         type: String, 
-        required: true
+        required: [true, "Du måste ange arbetsplats!"]
     }, 
     title:{
         type: String, 
-        required:true
+        required:[true, "Du måste ange jobbtitel!"]
     }, 
     location:{
         type: String, 
-        required:true
+        required:[true, "Du måste ange plats!"]
     }, 
     description:{
         type: String, 
-        required: false
+        required: [true, "Du måste ange en kort beskrivning!"]
     }
 }); 
 
