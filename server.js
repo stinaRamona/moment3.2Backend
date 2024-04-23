@@ -17,25 +17,79 @@ mongoose.connect("mongodb://localhost:27017/cv").then(() => {
     console.log("Fel vid anslutning till databas" + error); 
 });
 
+//schema för workexp
+const workexpSchema = mongoose.Schema({
+    workplace:{
+        type: String, 
+        required: true
+    }, 
+    title:{
+        type: String, 
+        required:true
+    }, 
+    location:{
+        type: String, 
+        required:true
+    }, 
+    description:{
+        type: String, 
+        required: false
+    }
+}); 
+
+//spara i variabel som används i resten av koden
+const Workexp = mongoose.model("Workexp", workexpSchema); 
+
 //Routing
 app.get("/api", (req, res)=>{
     res.json({message: "Välkommen till mitt API!"}); 
 });
 
-app.get("/api/workexp", (req, res)=>{
-    res.json({message: "Här finns alla poster i databasen!"})
+app.get("/workexps", async (req, res)=>{
+    try{
+        let result = await Workexp.find({}); //visar all data i workexp
+
+        return res.json(result); 
+    } catch(error) {
+        return res.status(500).json(error); 
+    }
 }); 
 
-app.post("/api/workexp", (req, res)=>{
-    res.json({message:"Lagt till post i API"})
+app.post("/workexps", async (req, res)=>{
+    try{
+        let result = await Workexp.create(req.body); 
+
+        return res.json(result); 
+    } catch(error) {
+
+        return res.status(400).json(error); 
+    }
 }); 
 
-app.put("/api/workexp/:id", (req, res)=> {
-    res.json({message:"Uppdaterat post med id:" + req.params.id}); 
+app.put("/workexps/:_id", async (req, res)=> {
+    try{
+        let id = req.params._id;
+
+        let result = await Workexp.updateOne({_id: id}, {$set: req.body}); //uppdaterar med sat ID
+
+        return res.json(result); 
+
+    } catch(error){
+        return res.status(500).json(error); 
+    } 
 }); 
 
-app.delete("/api/workexp/:id", (req, res)=> {
-    res.json({message:"Tagit bort post med id:" + req.params.id}); 
+app.delete("/workexps/:_id", async (req, res)=> {
+    try{
+        let id = req.params._id; 
+
+        let result = await Workexp.deleteOne({_id: id}); //tar bort med ID
+
+        return res.json(result); 
+    } catch(error) {
+
+        return res.status(500).json(error); 
+    }
 }); 
 
 
